@@ -12,13 +12,13 @@ const postRoutes = require('./Routes/posts');
 
 //!MiddleWare
 app.use(bodyParser.json());
-app.use('/post',postRoutes);
-app.use('/post/newpost',postRoutes);
+app.use('/posts',postRoutes);
+app.use('/posts/addNewProduct',postRoutes);
 
 //!Connect to DB
-// mongoose.connect(process.env.DB_CONNECTION,
-// {useUnifiedTopology : true},
-// () => console.log("Connected to DB."));
+mongoose.connect(process.env.DB_CONNECTION,
+{useNewUrlParser: true, useUnifiedTopology: true},
+() => console.log("Connected to DB."));
 
 
 

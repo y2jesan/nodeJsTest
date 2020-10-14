@@ -1,21 +1,60 @@
 const express = require('express');
 const router = express.Router();
 
-const product = require('../models/Product');
+const Product = require('../models/Product');
 
-router.get('/', (req,res) => {
-    console.log("Post Happned.");
-    let m = {
-        Id : 1,
-        Name : "Jesan"
-    };
-    res.send(m);
+router.get('/',async (req,res) => {
+    console.log("Getting all products...");
+    try{
+        const products = await Product.find();
+        res.status(200).json(products);
+        console.log(products.length + " Products Found.");
+        return;
+    }catch(err){
+        res.status(400).json({message : err});
+        console.log("Products Founding Failed !");
+        return;
+    }
 });
 
-router.post('/newpost', (req,res) => {
+router.post('/addNewProduct',async (req,res) => {
+    console.log("Adding New product...");
     console.log(req.body);
-    
-    res.send("New post.");
+    if(!req.body.title){
+        console.log("Product Add Failed !");
+        return res.status(400).json(
+            {
+                status : 'error',
+                message : 'Please Provide Title'
+            }
+        );
+    }
+    if(!req.body.price){
+        console.log("Product Add Failed !");
+        return res.status(400).json(
+            {
+                status : 'error',
+                message : 'Please Provide Price'
+            }
+        );
+    }
+
+    const product = new Product({
+        title: req.body.title,
+        price: req.body.price
+    });
+    try{
+        const addedProduct = await product.save();
+        res.status(200).json({
+            status: 'success',
+            product : addedProduct
+        });
+        console.log("New Product Added !");
+        return;
+    }catch (err){
+        res.json({message : err});
+        console.log("Product Add Failed !");
+    }
 });
 
 // router.post('/addProduct',(req,res) => {
