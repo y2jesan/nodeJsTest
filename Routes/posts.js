@@ -3,7 +3,27 @@ const router = express.Router();
 
 const Product = require('../models/Product');
 
+
 router.get('/',async (req,res) => {
+    console.log("Post Api Called...");
+    return;
+});
+
+//!Routes
+/**
+ * @swagger
+ * /posts/getAllProducts:
+ *      get:
+ *          tags:
+ *              - Products
+ *          description: This Will Return All Products
+ *          responses:
+ *              '200':
+ *                  description: Success
+ *              '500':
+ *                  description: Failed
+ */
+router.get('/getAllProducts',async (req,res) => {
     console.log("Getting all products...");
     try{
         const products = await Product.find();
@@ -17,6 +37,34 @@ router.get('/',async (req,res) => {
     }
 });
 
+/**
+ * @swagger
+ * 
+ * /posts/addNewProduct:
+ *  post:
+ *      tags:
+ *          - Products
+ *      summary: Add Product
+ *      description: This Will Add A New Products
+ *      parameters:
+ *          -name: title
+ *      requestbody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          title:
+ *                              type : string
+ *                          price:
+ *                              type: number
+ *      responses:
+ *          '201':
+ *              description: Product Added Successfully
+ *          '422':
+ *              description: Product Add Failed
+ */
 router.post('/addNewProduct',async (req,res) => {
     console.log("Adding New product...");
     console.log(req.body);
@@ -57,9 +105,6 @@ router.post('/addNewProduct',async (req,res) => {
     }
 });
 
-// router.post('/addProduct',(req,res) => {
-
-// });
 
 
 module.exports = router;

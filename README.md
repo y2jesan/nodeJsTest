@@ -13,4 +13,6 @@ npm i dotenv -- install env
 
 npm i body-parser -- for parsing json
 
+npm i swagger-ui-express swagger-jsdoc
+
 npm run devStart -- start nodemon 
