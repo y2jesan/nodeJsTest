@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv/config');
 
-
 const app = express();
 swaggerDoc(app);
 
@@ -26,9 +25,9 @@ app.use('/posts/deleteProduct/:id',postRoutes);
 //!Connect to DB
 mongoose.connect(process.env.DB_CONNECTION,
 {useNewUrlParser: true, useUnifiedTopology: true},
-() => console.log("Connected to DB."));
+() => console.log(`Connected to DB.`));
 
 
 
 //!listening 
-app.listen(PORT,()=> {console.log("Server Started With Port : "+ PORT);});
+app.listen(PORT,()=> {console.log(`Server Started With Port : ${PORT}`);});
