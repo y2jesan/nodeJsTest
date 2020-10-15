@@ -15,4 +15,6 @@ npm i body-parser -- for parsing json
 
 npm i swagger-ui-express swagger-jsdoc
 
+npm i cors
+
 npm run devStart -- start nodemon 

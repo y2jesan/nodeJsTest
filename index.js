@@ -2,22 +2,26 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerDoc = require('./swaggerDoc.js');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 require('dotenv/config');
 
-const bodyParser = require('body-parser');
 
 const app = express();
 swaggerDoc(app);
 
-//!Import ROUTES
-const postRoutes = require('./Routes/posts');
-
 //!MiddleWare
 app.use(bodyParser.json());
+app.use(cors());
+
+
+//!Import ROUTES
+const postRoutes = require('./Routes/posts');
 
 app.use('/posts',postRoutes);
 app.use('/posts/getAllProducts',postRoutes);
 app.use('/posts/addNewProduct',postRoutes);
+app.use('/posts/deleteProduct/:id',postRoutes);
 
 //!Connect to DB
 mongoose.connect(process.env.DB_CONNECTION,

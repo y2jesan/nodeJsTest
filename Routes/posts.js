@@ -20,7 +20,7 @@ router.get('/',async (req,res) => {
  *          responses:
  *              '200':
  *                  description: Success
- *              '500':
+ *              '400':
  *                  description: Failed
  */
 router.get('/getAllProducts',async (req,res) => {
@@ -32,7 +32,7 @@ router.get('/getAllProducts',async (req,res) => {
         return;
     }catch(err){
         res.status(400).json({message : err});
-        console.log("Products Founding Failed !");
+        console.log("Products Finding Failed !");
         return;
     }
 });
@@ -102,5 +102,91 @@ router.post('/addNewProduct',async (req,res) => {
 });
 
 
+/**
+ * @swagger
+ * /posts/deleteProduct/{id}:
+ *      delete:
+ *          tags:
+ *              - Products
+ *          description: This Will Delete A Products
+ *          parameters:
+ *          - name: id
+ *            description: product id
+ *            in: path
+ *          responses:
+ *              '200':
+ *                  description: Success
+ *              '400':
+ *                  description: Failed
+ */
+router.delete('/deleteProduct/:id',async (req,res) => {
+    console.log("deleting product...");
+    if(!req.params.id){
+        console.log("Product Add Failed !");
+        return res.status(400).json(
+            {
+                status : 'error',
+                message : 'Please Provide Id.'
+            }
+        );
+    }
+    try{
+        const removedProduct = await Product.deleteOne({_id: req.params.id});
+        res.status(200).json(removedProduct);
+        console.log(removedProduct.deletedCount + " Product(s) Deleted.");
+        return;
+    }catch(err){
+        res.status(400).json({message : err});
+        console.log("Product Delete Failed !");
+        return;
+    }
+});
 
+/**
+ * @swagger
+ * /posts/updateProduct/{id}:
+ *      patch:
+ *          tags:
+ *              - Products
+ *          description: This Will Update Product
+ *          parameters:
+ *          - name: id
+ *            description: product id
+ *            required: true
+ *            in: path
+ *          - name: requestbody
+ *            description: Updated Product
+ *            required: true
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      required: false
+ *                  price:
+ *                      type: number   
+ *                      required: false        
+ *          responses:
+ *              '200':
+ *                  description: Success
+ *              '400':
+ *                  description: Failed
+ */
+router.patch('/updateProduct/:id',async (req,res) => {
+    console.log("Updating product...");
+    try{
+        const updatedProduct = await Product.updateOne(
+            { _id: req.params.id },
+            { $set : {title: req.body.title, price: req.body.price}}
+        );
+        res.status(200).json(updatedProduct);
+        console.log(updatedProduct.nModified + " Product(s) Updated.");
+        return;
+    }catch(err){
+        res.status(400).json({message : err});
+        console.log("Product Update Failed !");
+        return;
+    }
+});
 module.exports = router;
