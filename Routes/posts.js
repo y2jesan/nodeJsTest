@@ -39,26 +39,22 @@ router.get('/getAllProducts',async (req,res) => {
 
 /**
  * @swagger
- * 
  * /posts/addNewProduct:
  *  post:
  *      tags:
  *          - Products
  *      summary: Add Product
- *      description: This Will Add A New Products
  *      parameters:
- *          -name: title
- *      requestbody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          title:
- *                              type : string
- *                          price:
- *                              type: number
+ *          - name: requestBody
+ *            description: product details
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                  price:
+ *                      type: number
  *      responses:
  *          '201':
  *              description: Product Added Successfully
