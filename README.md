@@ -15,6 +15,8 @@ npm i body-parser -- for parsing json
 
 npm i swagger-ui-express swagger-jsdoc
 
-npm i cors
+npm i cors --remove cors dependency
+
+npm i @hapi/joi  -- validate
 
 npm run devStart -- start nodemon 

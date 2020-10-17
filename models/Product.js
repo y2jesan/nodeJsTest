@@ -11,7 +11,7 @@ const productModel = mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now
+        default: new Date().toJSON().split('T')[0]
     }
 });
 

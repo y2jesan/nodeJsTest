@@ -11,7 +11,7 @@ const options = {
         servers: ['http://localhost:3000'],
         basePath: '/'
     },
-    apis: ['index.js','./Routes/posts.js']
+    apis: ['index.js','./Routes/posts.js','./Routes/auth.js']
 };
 
 const specs = swaggerJsdoc(options);
