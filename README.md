@@ -19,4 +19,6 @@ npm i cors --remove cors dependency
 
 npm i @hapi/joi  -- validate
 
+npm i bcryptjs -- password decryption
+
 npm run devStart -- start nodemon 

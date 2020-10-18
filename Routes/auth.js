@@ -1,16 +1,12 @@
 const router = require('express').Router();
-const User  = require('../models/User');
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
-//! VALIDATION
-const Joi = require('@hapi/joi');
+const validation = require('./validation');
+//? can be imported only single validation model too
+//const {registerValidation} = require('./validation');
 
-const schema = Joi.object({
-    username : Joi.string().min(5).required(),
-    email : Joi.string().min(6).required().email(),
-    password : Joi.string().min(4).required()
-});
-
-router.get('/',async (req,res) => {
+router.get('/', async (req, res) => {
     console.log("Auth Api Called...");
     return;
 });
@@ -43,38 +39,59 @@ router.get('/',async (req,res) => {
  *              description: User Added Successfully
  *          '422':
  *              description: User Add Failed
+ *          '421':
+ *              description: User Already Exists
  */
 
 
-router.post('/addUser', async (req,res) => {
+router.post('/addUser', async (req, res) => {
     //!Validate Date
-    const {error} = schema.validate(req.body);
+    const {
+        error
+    } = validation.registerValidation(req.body);
     console.log(error);
-    //console.log(error.details[0].message);
 
-    if(1 !== 1){
+    //!If Valid
+    if (error === undefined) {
+
+        //!Chek if User Already Exists Or Not
+        const userExists = await User.findOne({
+            email: req.body.email
+        });
+        if (userExists) return res.status(421).json({
+            message: `User Already Exists!`
+        });
+
+        //!Hash The Password 
+        //? Should be taken to another file
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
         const user = new User({
-            username : req.body.username,
-            email : req.body.email,
-            password: req.body.password
-         });
-         try{
-             const addedUser = await user.save();
-             res.status(200).json({
-                 status: 'success',
-                 product : addedUser 
-     
-             });
-             console.log("New User Added !");
-             return;
-         }catch (err){
-             res.json({message : err});
-             console.log("User Add Failed !");
-             return;
-         }
-    }
-    else{
-        res.json(error);
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword
+        });
+        try {
+            const addedUser = await user.save();
+            res.status(200).json({
+                status: 'success',
+                product: {
+                    _id : addedUser._id,
+                    username: addedUser.username
+                }
+            });
+            console.log("New User Added !");
+            return;
+        } catch (err) {
+            res.status(422).json({
+                message: err
+            });
+            console.log("User Add Failed !");
+            return;
+        }
+    } else {
+        res.status(422).json(error.details[0]);
         console.log("User Add Failed !");
         return;
     }
