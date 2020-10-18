@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-
+const jwt = require('jsonwebtoken');
 const validation = require('./validation');
 //? can be imported only single validation model too
 //const {registerValidation} = require('./validation');

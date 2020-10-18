@@ -21,4 +21,6 @@ npm i @hapi/joi  -- validate
 
 npm i bcryptjs -- password decryption
 
+npm i jsonwebtoken -- jwt
+
 npm run devStart -- start nodemon 
