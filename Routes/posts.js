@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
 const Product = require('../models/Product');
+const {
+    jwtAuth
+} = require('./verifyToken');
 
-
-router.get('/',async (req,res) => {
+router.get('/', async (req, res) => {
     console.log("Post Api Called...");
     return;
 });
@@ -17,21 +18,25 @@ router.get('/',async (req,res) => {
  *          tags:
  *              - Products
  *          description: This Will Return All Products
+ *          security:
+ *              - ApiKeyAuth: [auth-token]
  *          responses:
  *              '200':
  *                  description: Success
  *              '400':
  *                  description: Failed
  */
-router.get('/getAllProducts',async (req,res) => {
+router.get('/getAllProducts', jwtAuth, async (req, res) => {
     console.log("Getting all products...");
-    try{
+    try {
         const products = await Product.find();
         res.status(200).json(products);
         console.log(products.length + " Products Found.");
         return;
-    }catch(err){
-        res.status(400).json({message : err});
+    } catch (err) {
+        res.status(400).json({
+            message: err
+        });
         console.log("Products Finding Failed !");
         return;
     }
@@ -44,6 +49,8 @@ router.get('/getAllProducts',async (req,res) => {
  *      tags:
  *          - Products
  *      summary: Add Product
+ *      security:
+ *          - ApiKeyAuth: [auth-token]
  *      parameters:
  *          - name: requestBody
  *            description: product details
@@ -61,42 +68,40 @@ router.get('/getAllProducts',async (req,res) => {
  *          '422':
  *              description: Product Add Failed
  */
-router.post('/addNewProduct',async (req,res) => {
+router.post('/addNewProduct', jwtAuth, async (req, res) => {
     console.log("Adding New product...");
     console.log(req.body);
-    if(!req.body.title){
+    if (!req.body.title) {
         console.log("Product Add Failed !");
-        return res.status(400).json(
-            {
-                status : 'error',
-                message : 'Please Provide Title'
-            }
-        );
+        return res.status(400).json({
+            status: 'error',
+            message: 'Please Provide Title'
+        });
     }
-    if(!req.body.price){
+    if (!req.body.price) {
         console.log("Product Add Failed !");
-        return res.status(400).json(
-            {
-                status : 'error',
-                message : 'Please Provide Price'
-            }
-        );
+        return res.status(400).json({
+            status: 'error',
+            message: 'Please Provide Price'
+        });
     }
 
     const product = new Product({
         title: req.body.title,
         price: req.body.price
     });
-    try{
+    try {
         const addedProduct = await product.save();
         res.status(200).json({
             status: 'success',
-            product : addedProduct
+            product: addedProduct
         });
         console.log("New Product Added !");
         return;
-    }catch (err){
-        res.json({message : err});
+    } catch (err) {
+        res.json({
+            message: err
+        });
         console.log("Product Add Failed !");
     }
 });
@@ -109,6 +114,8 @@ router.post('/addNewProduct',async (req,res) => {
  *          tags:
  *              - Products
  *          description: This Will Delete A Products
+ *          security:
+ *              - ApiKeyAuth: [auth-token]
  *          parameters:
  *          - name: id
  *            description: product id
@@ -119,24 +126,26 @@ router.post('/addNewProduct',async (req,res) => {
  *              '400':
  *                  description: Failed
  */
-router.delete('/deleteProduct/:id',async (req,res) => {
+router.delete('/deleteProduct/:id', jwtAuth, async (req, res) => {
     console.log("deleting product...");
-    if(!req.params.id){
+    if (!req.params.id) {
         console.log("Product Add Failed !");
-        return res.status(400).json(
-            {
-                status : 'error',
-                message : 'Please Provide Id.'
-            }
-        );
+        return res.status(400).json({
+            status: 'error',
+            message: 'Please Provide Id.'
+        });
     }
-    try{
-        const removedProduct = await Product.deleteOne({_id: req.params.id});
+    try {
+        const removedProduct = await Product.deleteOne({
+            _id: req.params.id
+        });
         res.status(200).json(removedProduct);
         console.log(removedProduct.deletedCount + " Product(s) Deleted.");
         return;
-    }catch(err){
-        res.status(400).json({message : err});
+    } catch (err) {
+        res.status(400).json({
+            message: err
+        });
         console.log("Product Delete Failed !");
         return;
     }
@@ -149,6 +158,8 @@ router.delete('/deleteProduct/:id',async (req,res) => {
  *          tags:
  *              - Products
  *          description: This Will Update Product
+ *          security:
+ *              - ApiKeyAuth: [auth-token]
  *          parameters:
  *          - name: id
  *            description: product id
@@ -173,18 +184,24 @@ router.delete('/deleteProduct/:id',async (req,res) => {
  *              '400':
  *                  description: Failed
  */
-router.patch('/updateProduct/:id',async (req,res) => {
+router.patch('/updateProduct/:id', jwtAuth, async (req, res) => {
     console.log("Updating product...");
-    try{
-        const updatedProduct = await Product.updateOne(
-            { _id: req.params.id },
-            { $set : {title: req.body.title, price: req.body.price}}
-        );
+    try {
+        const updatedProduct = await Product.updateOne({
+            _id: req.params.id
+        }, {
+            $set: {
+                title: req.body.title,
+                price: req.body.price
+            }
+        });
         res.status(200).json(updatedProduct);
         console.log(updatedProduct.nModified + " Product(s) Updated.");
         return;
-    }catch(err){
-        res.status(400).json({message : err});
+    } catch (err) {
+        res.status(400).json({
+            message: err
+        });
         console.log("Product Update Failed !");
         return;
     }

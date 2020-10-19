@@ -3,6 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validation = require('./validation');
+const {jwtAuth} = require('./verifyToken');
 //? can be imported only single validation model too
 //const {registerValidation} = require('./validation');
 
@@ -18,6 +19,8 @@ router.get('/', async (req, res) => {
  *      tags:
  *          - User
  *      summary: Add User
+ *      security:
+ *          - ApiKeyAuth: [auth-token]
  *      parameters:
  *          - name: requestBody
  *            description: User details
@@ -44,7 +47,7 @@ router.get('/', async (req, res) => {
  */
 
 
-router.post('/addUser', async (req, res) => {
+router.post('/addUser',jwtAuth, async (req, res) => {
     //!Validate Date
     const {
         error
@@ -148,10 +151,15 @@ router.post('/login', async (req, res) => {
         });
     } 
     console.log(`${user.username} - Logged in...`);
-    return res.status(200).json({
+
+    //! Create And Assign Token
+    const token = jwt.sign({_id: user._id},process.env.TOKEN_SECRET);
+
+    return res.status(200).header('auth-token', token).json({
         _id: user._id,
         username: user.username,
-        date: user.date 
+        date: user.date,
+        token: token
     });
 });
 

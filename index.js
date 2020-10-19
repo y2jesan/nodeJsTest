@@ -1,7 +1,7 @@
 const PORT = process.env.PORT || 3000;
 const express = require('express');
 const mongoose = require('mongoose');
-const swaggerDoc = require('./swaggerDoc.js');
+const swaggerDoc = require('./Routes/swaggerDoc.js');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv/config');
